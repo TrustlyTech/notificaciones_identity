@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # 👈 Importa CORS
 import psycopg2
 
 app = Flask(__name__)
+CORS(app)  # 👈 Habilita CORS para todas las rutas
 
 DB_URL = "postgresql://requisitoriados_user:x0xLGMH3N71ZfUG9UX7rcBiujKiELzKY@dpg-d114ho2li9vc738covqg-a.oregon-postgres.render.com/requisitoriados"
 
@@ -78,14 +80,12 @@ def eliminar_notificacion(notificacion_id):
     conn = connect_db()
     cur = conn.cursor()
 
-    # Verificar si la notificación existe
     cur.execute("SELECT id FROM notificaciones WHERE id = %s;", (notificacion_id,))
     if not cur.fetchone():
         cur.close()
         conn.close()
         return jsonify({"exito": False, "error": "Notificación no encontrada"}), 404
 
-    # Eliminar la notificación
     cur.execute("DELETE FROM notificaciones WHERE id = %s;", (notificacion_id,))
     conn.commit()
     cur.close()
