@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # 👈 Importa CORS
+from flask_cors import CORS  #  Importa CORS
 import psycopg2
 
 app = Flask(__name__)
-CORS(app)  # 👈 Habilita CORS para todas las rutas
+CORS(app)  #  Habilita CORS para todas las rutas
 
 DB_URL = "postgresql://requisitoriados_user:x0xLGMH3N71ZfUG9UX7rcBiujKiELzKY@dpg-d114ho2li9vc738covqg-a.oregon-postgres.render.com/requisitoriados"
 
