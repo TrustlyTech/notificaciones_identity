@@ -111,6 +111,30 @@ def eliminar_todas_notificaciones(usuario_id):
 
     return jsonify({"exito": True, "mensaje": "Todas las notificaciones del usuario han sido eliminadas"})
 
+@app.route('/notificaciones/reporte_exitoso', methods=['POST'])
+def crear_notificacion_reporte_exitoso():
+    data = request.get_json()
+    usuario_id = data.get('usuario_id')
+
+    if not usuario_id:
+        return jsonify({"exito": False, "error": "Falta el usuario_id"}), 400
+
+    mensaje = "Denuncia de requisitoriado exitosa"
+    tipo = "reporte_exitoso"
+
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO notificaciones (usuario_id, tipo, mensaje)
+        VALUES (%s, %s, %s)
+        RETURNING id;
+    """, (usuario_id, tipo, mensaje))
+    notificacion_id = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"exito": True, "notificacion_id": notificacion_id, "mensaje": mensaje})
 
 
 if __name__ != '__main__':
