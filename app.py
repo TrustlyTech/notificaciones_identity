@@ -93,6 +93,25 @@ def eliminar_notificacion(notificacion_id):
 
     return jsonify({"exito": True, "mensaje": "Notificación eliminada"})
 
+@app.route('/notificaciones/usuario/<int:usuario_id>', methods=['DELETE'])
+def eliminar_todas_notificaciones(usuario_id):
+    conn = connect_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id FROM notificaciones WHERE usuario_id = %s;", (usuario_id,))
+    if cur.rowcount == 0:
+        cur.close()
+        conn.close()
+        return jsonify({"exito": False, "error": "No hay notificaciones para este usuario"}), 404
+
+    cur.execute("DELETE FROM notificaciones WHERE usuario_id = %s;", (usuario_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"exito": True, "mensaje": "Todas las notificaciones del usuario han sido eliminadas"})
+
+
 
 if __name__ != '__main__':
     # Producción (Gunicorn, etc.)
